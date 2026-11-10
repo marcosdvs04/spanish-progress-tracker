@@ -1,0 +1,27 @@
+# --- Secrets: never commit ---
+.env
+*.key
+
+# --- Local data: never commit learner records ---
+*.db
+*.sqlite
+*.sqlite3
+data/
+exports/
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# --- OS / editor ---
+.DS_Store
+.idea/
+.vscode/
