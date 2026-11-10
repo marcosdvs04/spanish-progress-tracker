@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block body %}
+<h1>Run halted — {{ reason }}</h1>
+<div class="card warn">
+  <p><strong>Nothing was generated, and nothing was invented.</strong></p>
+  {% if missing %}<ul>{% for m in missing %}<li>{{ m }}</li>{% endfor %}</ul>{% endif %}
+</div>
+<p class="muted">Lesson {{ record.lesson_date }} &middot; student {{ record.student_ref }}
+&middot; status {{ record.status.value }}</p>
+<p><a href="/">&larr; back</a></p>
+{% endblock %}

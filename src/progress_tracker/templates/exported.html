@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block body %}
+<h1>Approved and exported</h1>
+<p class="muted">Written to <code>{{ export_dir }}/</code> as .txt and .pdf. The system has no
+way to send this anywhere — sharing it is your action, not the system's.</p>
+<pre>{{ body }}</pre>
+<p><a href="/">&larr; back</a></p>
+{% endblock %}

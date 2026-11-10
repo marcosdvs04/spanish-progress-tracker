@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block body %}
+<h1>Review — lesson {{ record.lesson_date }}</h1>
+<p class="muted">Student {{ record.student_ref }} &middot; level
+<strong>{{ draft.level_used }}</strong> (yours) &middot;
+status <span class="pill {% if draft.review_status == 'tutor_approved' %}ok{% else %}draft{% endif %}">
+{% if draft.review_status == 'tutor_approved' %}Tutor-approved{% else %}Draft — not reviewed{% endif %}</span>
+&middot; readability {{ draft.readability.mean_sentence_len }} words/sentence,
+Spanish ratio {{ draft.readability.target_lang_ratio }}
+{% if draft.readability.passed %}(in band){% else %}(out of band — flagged){% endif %}</p>
+
+{% if msg == 'open_items' %}
+<div class="card warn"><strong>Approval refused.</strong> Every candidate needs a decision
+first. Approval has to mean you saw them, not that you clicked past them.</div>
+{% endif %}
+
+<h2>Candidates — {{ open_items|length }} still open</h2>
+{% for e in errors %}
+<div class="card">
+  <p><span class="pill {% if e.status != 'candidate' %}ok{% endif %}">{{ e.status }}</span>
+     <strong>{{ e.category }}</strong>
+     <span class="muted">severity {{ e.severity }}</span>
+     {% set f = findings.get(e.category) %}
+     {% if f %}
+       {% if f.is_recurring %}<span class="pill rec">recurring</span>{% endif %}
+       <span class="muted">{{ f.occurrence_count }} of last {{ f.window_size }}
+       &middot; trend {{ f.trend }}</span>
+     {% endif %}
+  </p>
+  <blockquote>“{{ e.source_ref.quoted_text }}”
+    <span class="muted">— your note, {{ e.source_ref.lesson_date }}</span></blockquote>
+  <form method="post" action="/ui/review/{{ record.record_id }}/disposition" class="inline">
+    <input type="hidden" name="item_id" value="{{ e.item_id }}">
+    <button name="action" value="validate">Validate</button>
+    <button name="action" value="reject" class="alt">Reject</button>
+    <button name="action" value="question" class="alt">Raise question</button>
+  </form>
+</div>
+{% endfor %}
+
+<h2>Draft the student would receive</h2>
+{% for b in draft.body_blocks %}
+<div class="card src">
+  <p>{{ b.text }}</p>
+  <form method="post" action="/ui/review/{{ record.record_id }}/disposition" class="inline">
+    <input type="hidden" name="item_id" value="{{ b.block_id }}">
+    <input type="hidden" name="action" value="correct">
+    <input name="after" placeholder="Rewrite this in your own words…">
+    <button class="go" type="submit">Correct</button>
+  </form>
+</div>
+{% endfor %}
+
+<h2>Next focus</h2>
+{% for g in draft.goals %}
+<div class="card src">
+  <p><strong>{{ g.text }}</strong><br>{{ g.practice }}</p>
+  <form method="post" action="/ui/review/{{ record.record_id }}/disposition" class="inline">
+    <input type="hidden" name="item_id" value="{{ g.goal_id }}">
+    <input type="hidden" name="action" value="correct">
+    <input name="after" placeholder="Rewrite this goal…">
+    <button class="go" type="submit">Correct</button>
+  </form>
+</div>
+{% endfor %}
+
+<h2>Approve</h2>
+<form method="post" action="/ui/review/{{ record.record_id }}/approve">
+  <p class="muted">Approving writes the two artifacts and promotes this lesson into the
+  student's approved history. Nothing is sent anywhere.</p>
+  <button type="submit">Approve and export</button>
+</form>
+<p style="margin-top:18px"><a href="/">&larr; back</a></p>
+{% endblock %}

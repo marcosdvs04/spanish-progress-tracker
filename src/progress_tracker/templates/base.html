@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}Spanish Progress Tracker{% endblock %}</title>
+<style>
+ :root{--ink:#1c2b30;--accent:#0f5a63;--accent2:#c65a2e;--line:#d4dee0;--soft:#f2f7f7;--warn:#fbeee6;}
+ *{box-sizing:border-box}
+ body{font-family:-apple-system,"Helvetica Neue",Arial,sans-serif;color:var(--ink);
+      margin:0;background:#fff;line-height:1.5}
+ header{background:var(--accent);color:#fff;padding:14px 22px;display:flex;
+        justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px}
+ header a{color:#cfe6e8;text-decoration:none}
+ header .t{font-weight:700;font-size:16px}
+ header .p{font-size:11px;opacity:.85}
+ main{max-width:960px;margin:0 auto;padding:22px}
+ h1{font-size:20px;margin:0 0 4px} h2{font-size:14px;color:var(--accent);
+   border-bottom:2px solid var(--accent);padding-bottom:3px;margin:22px 0 10px}
+ .muted{color:#5b6b70;font-size:12px}
+ table{border-collapse:collapse;width:100%;font-size:13px;margin:8px 0}
+ th,td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top}
+ th{background:var(--accent);color:#fff;font-size:11px;text-transform:uppercase}
+ .card{border:1px solid var(--line);border-radius:6px;padding:12px 14px;margin:10px 0;background:#fff}
+ .card.src{background:var(--soft)}
+ .warn{background:var(--warn);border-color:#e7c3ad}
+ .pill{display:inline-block;font-size:10px;font-weight:700;text-transform:uppercase;
+       padding:2px 8px;border-radius:9px;background:#dde7e8;color:#2c4a4e}
+ .pill.rec{background:var(--accent2);color:#fff}
+ .pill.draft{background:#c65a2e;color:#fff}
+ .pill.ok{background:#0f5a63;color:#fff}
+ label{display:block;font-size:12px;font-weight:600;margin:8px 0 3px}
+ input,select,textarea{width:100%;padding:7px 8px;border:1px solid var(--line);
+   border-radius:4px;font:inherit;font-size:13px}
+ textarea{min-height:110px}
+ button{background:var(--accent);color:#fff;border:0;border-radius:4px;
+   padding:8px 14px;font:inherit;font-weight:600;cursor:pointer}
+ button.alt{background:#5b6b70} button.go{background:var(--accent2)}
+ .row{display:flex;gap:10px;flex-wrap:wrap} .row>*{flex:1;min-width:150px}
+ .inline{display:flex;gap:6px;align-items:flex-end;flex-wrap:wrap}
+ .inline button{padding:6px 10px;font-size:12px}
+ pre{background:var(--soft);border-left:3px solid var(--accent);padding:12px;
+     white-space:pre-wrap;font-size:12px;border-radius:0 4px 4px 0}
+ blockquote{margin:6px 0;padding:6px 10px;border-left:3px solid var(--accent2);
+   background:#fff;font-size:12px;color:#41565b}
+</style></head><body>
+<header>
+  <span class="t"><a href="/">Spanish Progress Tracker</a></span>
+  <span class="p">model provider: {{ provider or "stub" }} &middot; synthetic data only</span>
+</header>
+<main>{% block body %}{% endblock %}</main>
+</body></html>

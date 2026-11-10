@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block body %}
+<h1>Record a lesson</h1>
+<p class="muted">The note you type is stored verbatim and never altered. Every statement
+in the summary will point back to a span of it.</p>
+<form method="post" action="/ui/lessons" class="card">
+  <div class="row">
+    <div><label>Student reference</label>
+      <input name="student_ref" value="syn-b1-01" required></div>
+    <div><label>Lesson date</label>
+      <input name="lesson_date" type="date" value="{{ today }}" required></div>
+    <div><label>CEFR level (yours, authoritative)</label>
+      <select name="tutor_level">
+        <option>A1</option><option>A2</option><option selected>B1</option>
+        <option>B2</option><option>C1</option></select></div>
+  </div>
+  <label>Lesson notes</label>
+  <textarea name="note_text" required placeholder="What went wrong, in your own words. Be specific: which error, in what context."></textarea>
+  <div class="row">
+    <div><label>Topics (comma separated)</label><input name="topics"></div>
+    <div><label>Homework</label><input name="homework"></div>
+    <div><label>Learner is a minor</label>
+      <select name="is_minor"><option value="">No</option><option value="1">Yes</option></select></div>
+  </div>
+  <p style="margin-top:12px"><button type="submit">Register &amp; generate candidate</button></p>
+</form>
+
+<h2>Records</h2>
+{% if records %}
+<table><thead><tr><th>Lesson</th><th>Student</th><th>Status</th><th></th></tr></thead><tbody>
+{% for r in records %}
+<tr><td>{{ r.lesson_date }}</td><td>{{ r.student_ref }}</td>
+<td><span class="pill {% if r.status == 'Exported' or r.status == 'Approved' %}ok{% elif 'Blocked' in r.status %}draft{% endif %}">{{ r.status }}</span></td>
+<td><a href="/ui/review/{{ r.record_id }}">open</a></td></tr>
+{% endfor %}
+</tbody></table>
+{% else %}<p class="muted">No lessons recorded yet.</p>{% endif %}
+{% endblock %}
