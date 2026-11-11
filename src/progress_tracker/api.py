@@ -26,7 +26,7 @@ config.load_dotenv()
 
 app = FastAPI(
     title="Spanish Progress Tracker",
-    version="1.0.0",
+    version="1.1.0",
     description=(
         "AI-assisted Spanish student progress & error tracker. "
         "A bounded Document Intelligence pipeline with retained human authority."
