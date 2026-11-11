@@ -29,10 +29,39 @@ first. Approval has to mean you saw them, not that you clicked past them.</div>
   </p>
   <blockquote>“{{ e.source_ref.quoted_text }}”
     <span class="muted">— your note, {{ e.source_ref.lesson_date }}</span></blockquote>
+  <p class="muted">Is this error real?</p>
   <form method="post" action="/ui/review/{{ record.record_id }}/disposition" class="inline">
     <input type="hidden" name="item_id" value="{{ e.item_id }}">
     <button name="action" value="validate">Validate</button>
     <button name="action" value="reject" class="alt">Reject</button>
+    <button name="action" value="question" class="alt">Raise question</button>
+  </form>
+  {% if f %}
+  <hr>
+  <p><span class="pill {% if f.status != 'candidate' %}ok{% endif %}">{{ f.status }}</span>
+     <span class="muted">Separate claim — is the <strong>pattern</strong> real?
+     {{ f.occurrence_count }} of the last {{ f.window_size }} approved lessons,
+     trend {{ f.trend }}{% if f.is_recurring %}, flagged recurring{% endif %}.</span></p>
+  <form method="post" action="/ui/review/{{ record.record_id }}/disposition" class="inline">
+    <input type="hidden" name="item_id" value="{{ f.finding_id }}">
+    <button name="action" value="validate">Validate pattern</button>
+    <button name="action" value="reject" class="alt">Reject pattern</button>
+    <button name="action" value="question" class="alt">Raise question</button>
+  </form>
+  {% endif %}
+</div>
+{% endfor %}
+
+{% for f in orphan_findings %}
+<div class="card">
+  <p><span class="pill {% if f.status != 'candidate' %}ok{% endif %}">{{ f.status }}</span>
+     <strong>{{ f.category }}</strong>
+     <span class="muted">pattern only — no error extracted from this lesson &middot;
+     {{ f.occurrence_count }} of last {{ f.window_size }} &middot; trend {{ f.trend }}</span></p>
+  <form method="post" action="/ui/review/{{ record.record_id }}/disposition" class="inline">
+    <input type="hidden" name="item_id" value="{{ f.finding_id }}">
+    <button name="action" value="validate">Validate pattern</button>
+    <button name="action" value="reject" class="alt">Reject pattern</button>
     <button name="action" value="question" class="alt">Raise question</button>
   </form>
 </div>

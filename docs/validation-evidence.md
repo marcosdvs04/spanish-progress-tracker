@@ -1,8 +1,8 @@
 # Validation Evidence
 
-Generated 2026-11-10 from a clean checkout, offline, against the deterministic stub adapter — no API key and no network. Reproduce with `pytest -v` and `python -m progress_tracker.cli demo`.
+Generated 2026-11-11 from a clean checkout, offline, against the deterministic stub adapter — no API key and no network. Reproduce with `pytest -v` and `python -m progress_tracker.cli demo`.
 
-**66 tests, all passing.** Organized by the validation priorities in §9 of the Solution Design Report.
+**69 tests, all passing.** Organized by the validation priorities in §9 of the Solution Design Report.
 
 ## P1 — Authority  <sub>(7 tests)</sub>
 
@@ -15,6 +15,15 @@ These must never fail. One occurrence invalidates the solution however well ever
 - [x] tutor correction survives into the export
 - [x] artifact carries status stamp and source appendix
 - [x] draft is stamped as unreviewed before approval
+
+## P1 — Review surface  <sub>(3 tests)</sub>
+
+Tutor authority is exercised on exactly one screen. A candidate with no control on it
+cannot be decided, which turns C-19 from a safeguard into a deadlock. Driven over HTTP.
+
+- [x] every open candidate has a control on the review screen
+- [x] findings are decided separately from the errors they derive from
+- [x] the browser flow can reach approval
 
 ## P1 — Privacy  <sub>(10 tests)</sub>
 

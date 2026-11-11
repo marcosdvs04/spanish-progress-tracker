@@ -307,7 +307,12 @@ class CandidateRepo:
         return out
 
     def findings(self, record_id: str) -> list[PatternFinding]:
-        return [PatternFinding(**json.loads(r["payload"])) for r in self._rows(record_id, "finding")]
+        out = []
+        for row in self._rows(record_id, "finding"):
+            data = json.loads(row["payload"])
+            data["status"] = row["status"]
+            out.append(PatternFinding(**data))
+        return out
 
     def draft(self, record_id: str) -> Optional[SummaryDraft]:
         rows = self._rows(record_id, "draft")

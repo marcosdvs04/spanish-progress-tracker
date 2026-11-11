@@ -130,6 +130,26 @@ now accepts `UnderReview` and fails with `UndispositionedItems`, which is the re
 It can never *succeed* from that state, because `UnderReview` means at least one candidate
 is open — so invariant I-3 is unchanged.
 
+### 6. The review screen could not reach approval
+
+A recurrence finding is a candidate in its own right, so `_open_items` counted it — but the
+workbench rendered findings as read-only text inside the error card and put disposition
+controls only on the error. Three errors were decidable; the three findings derived from
+them were not. C-19 then did exactly what it is supposed to do and refused approval, so
+**"Approve and export" could never succeed from the browser at all**. The CLI demo was
+unaffected because it dispositions the open-item list directly, which is precisely why the
+gap survived every run of the demonstration path.
+
+The fix gives each finding its own controls, and a finding whose category produced no error
+gets a card of its own. Bundling it into the error's button was rejected: the tutor may well
+accept that the error happened and reject the claim that it recurs, and recording a decision
+the tutor did not make is the failure mode this whole design exists to prevent.
+
+The deeper lesson is about where the test boundary sat. Every control was tested through the
+service layer, so the invariant held in every test while the only surface that exercises
+tutor authority could not satisfy it. Three P1 tests now drive the review screen over HTTP
+and assert that the set of open items is a subset of the controls the page renders.
+
 ## Deployment
 
 One local process, one encrypted SQLite file, loopback only, one outbound TLS destination

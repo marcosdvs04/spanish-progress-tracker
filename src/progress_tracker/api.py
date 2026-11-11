@@ -236,10 +236,17 @@ def ui_review(request: Request, record_id: str, msg: str = "") -> HTMLResponse:
     record = _record_or_404(record_id)
     errors = ctx.stores.candidates.errors(record_id)
     findings = {f.category: f for f in ctx.stores.candidates.findings(record_id)}
+    # C-19/FR-13: every open candidate must be reachable from this screen. A finding whose
+    # category has no error card would otherwise have no control and could never be
+    # dispositioned, making approval permanently unreachable.
+    error_categories = {e.category for e in errors}
+    orphan_findings = [f for cat, f in sorted(findings.items())
+                       if cat not in error_categories]
     text = validator_svc.student_facing_text(draft)
     return TEMPLATES.TemplateResponse(request, "review.html", {
         "record": record, "draft": draft, "errors": errors,
-        "findings": findings, "open_items": review._open_items(ctx, record_id),
+        "findings": findings, "orphan_findings": orphan_findings,
+        "open_items": review._open_items(ctx, record_id),
         "msg": msg, "preview": text,
     })
 

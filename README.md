@@ -42,7 +42,7 @@ python3 -m venv .venv && source .venv/bin/activate     # Windows: .venv\Scripts\
 pip install -e ".[dev]"
 
 python -m progress_tracker.cli demo                     # the whole capability, end to end
-pytest                                                  # 66 tests, offline
+pytest                                                  # 69 tests, offline
 python -m progress_tracker.cli serve                    # then open http://127.0.0.1:8000
 ```
 
@@ -128,7 +128,7 @@ JSON API docs at `/docs` (generated OpenAPI). Endpoints match §7.6 of the Solut
 ## Testing
 
 ```bash
-pytest                     # all 66
+pytest                     # all 69
 pytest tests/test_p1_authority.py tests/test_p1_privacy.py   # the ones that must never fail
 pytest tests/test_architecture.py                            # the continuous lint rules
 ```

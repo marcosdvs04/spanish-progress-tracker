@@ -151,6 +151,9 @@ class PatternFinding(Base):
     trend: Trend = "insufficient_history"
     supporting_refs: list[SourceRef] = Field(default_factory=list)
     rule_version: str = "PR-1/v1"
+    # A finding is a candidate in its own right (FR-13): the tutor may accept the error
+    # and still reject the claim that it recurs, so it carries its own disposition.
+    status: ItemStatus = "candidate"
 
 
 BlockKind = Literal["progress", "pattern", "goal", "practice", "level"]
