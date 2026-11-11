@@ -3,6 +3,33 @@
 All notable changes to this project are documented here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [1.1.0] — 2026-11-11
+
+### Fixed
+- **The review screen could not reach approval.** A recurrence finding is a candidate and
+  counts toward C-19, but the workbench rendered findings as read-only text inside the error
+  card and placed disposition controls only on the error. Three errors were decidable; the
+  three findings derived from them were not, so approval was refused permanently and the
+  browser path could never reach `Approved` for any record. The CLI was unaffected because it
+  dispositions the open-item list directly — which is why the gap survived the demonstration
+  path. Each finding now carries its own controls, and a finding whose category produced no
+  error gets a card of its own. Deliberately not bundled into the error's decision: a tutor may
+  accept that the error occurred and reject the claim that it recurs.
+  Regression tests: `test_every_open_candidate_has_a_control_on_the_review_screen`,
+  `test_findings_are_decided_separately_from_the_errors_they_derive_from`,
+  `test_the_browser_flow_can_reach_approval`.
+
+### Added
+- `spt prepare`: seeds the workbench database and stops at the review step, so the browser
+  demonstration starts at the decision rather than at an empty database or an approved record.
+- `PatternFinding.status`, read from the candidate row, so a finding's disposition state is
+  visible on the review screen.
+- `SECURITY.md`, `CODE_OF_CONDUCT.md`, pull-request and issue templates, `.editorconfig`.
+
+### Changed
+- 69 tests (was 66). Collected counts: P1 20, P2 11, P3 9, P4 13, architecture 16.
+- README screenshot regenerated against the corrected review screen.
+
 ## [1.0.0] — 2026-11-10
 
 First complete prototype: the bounded end-to-end capability from the Solution Design Report.

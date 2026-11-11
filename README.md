@@ -187,6 +187,18 @@ tests/           organized by validation priority P1–P4, plus architecture lin
 docs/            architecture notes, validation evidence, AI assistance record
 ```
 
+## Project documents
+
+| | |
+|---|---|
+| [CONTRIBUTING.md](CONTRIBUTING.md) | How to work on this and what a pull request has to satisfy |
+| [SECURITY.md](SECURITY.md) | What the privacy controls actually enforce, and what they do not |
+| [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) | The standard for participation |
+| [CHANGELOG.md](CHANGELOG.md) | Every release, including the defects implementation exposed |
+| [docs/architecture.md](docs/architecture.md) | Reference architecture, gates, invariants, lint rules |
+| [docs/validation-evidence.md](docs/validation-evidence.md) | All 69 tests, grouped by validation priority |
+| [docs/ai-assistance.md](docs/ai-assistance.md) | What AI produced, what was rejected, and why |
+
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). The short version: the architecture tests are not optional, P1 test assertions are written by hand, and no real learner data enters this repository.
