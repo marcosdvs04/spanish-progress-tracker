@@ -75,7 +75,8 @@ def _fresh(path: Path) -> Path:
             shutil.rmtree(path) if path.is_dir() else path.unlink()
         return path
     except OSError:
-        return path.with_name(f"{path.stem}-{int(time.time())}{path.suffix}")
+        stamp = int(time.time())
+        return path.with_name(f"{path.stem}-{stamp}{path.suffix}")
 
 
 def _seed_lesson(ctx: AppContext, note: NoteSubmission, quiet: bool = True) -> Optional[str]:
@@ -213,6 +214,52 @@ def cmd_serve(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_prepare(args: argparse.Namespace) -> int:
+    """Seed the database ``serve`` reads, leaving the current lesson under review.
+
+    ``demo`` runs the whole path and finishes with an approved record, which is the
+    wrong starting point for a walkthrough of the review screen. This stops one step
+    earlier: the history is approved, the new lesson has been through the pipeline,
+    and every candidate is still open — so the first thing shown in the browser is
+    the decision the tutor actually has to make.
+    """
+    db = _usable(_fresh(Path(args.db or config.DB_PATH())))
+    ctx = AppContext(db_path=str(db))
+
+    _p(LINE)
+    _p("PREPARING THE REVIEW WORKBENCH (synthetic data only)")
+    _p(LINE)
+    _p(f"\ndatabase : {db}")
+
+    _p("\n[1] Approved history")
+    for note in demo_data.HISTORY:
+        rid = _seed_lesson(ctx, note)
+        _p(f"    {note.lesson_date}  approved  record {rid[:8] if rid else 'n/a'}")
+
+    _p("\n[2] The lesson under review")
+    record = intake.register(ctx, demo_data.CURRENT)
+    result = run_pipeline(ctx, record.record_id)
+    if not result.ok:
+        _p(f"    pipeline blocked: {result.status.value} ({result.blocked_reason})")
+        return 1
+    review.open_review(ctx, record.record_id)
+    open_items = review._open_items(ctx, record.record_id)  # noqa: SLF001
+    errors = ctx.stores.candidates.errors(record.record_id)
+    findings = ctx.stores.candidates.findings(record.record_id)
+    _p(f"    {demo_data.CURRENT.lesson_date}  record {record.record_id[:8]}"
+       f"  status={ctx.stores.lessons.get(record.record_id).status.value}")
+    _p(f"    {len(errors)} candidate error(s), {len(findings)} recurrence finding(s)"
+       f" — {len(open_items)} decision(s) waiting")
+
+    _p(LINE)
+    _p("Nothing has been approved and nothing has been exported.")
+    _p("Start the workbench and open the record:")
+    _p("    python -m progress_tracker.cli serve")
+    _p("    http://127.0.0.1:8000")
+    _p(LINE)
+    return 0
+
+
 def cmd_reset(args: argparse.Namespace) -> int:
     for target in (args.db or config.DB_PATH(), config.EXPORT_DIR()):
         path = Path(target)
@@ -233,6 +280,11 @@ def main(argv: Optional[list[str]] = None) -> int:
     d.add_argument("--db", default=None)
     d.add_argument("--out", default=None)
     d.set_defaults(func=cmd_demo)
+
+    p = sub.add_parser("prepare",
+                       help="seed the workbench database and stop at the review step")
+    p.add_argument("--db", default=None)
+    p.set_defaults(func=cmd_prepare)
 
     s = sub.add_parser("serve", help="run the review workbench")
     s.add_argument("--host", default="127.0.0.1")

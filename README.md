@@ -43,6 +43,7 @@ pip install -e ".[dev]"
 
 python -m progress_tracker.cli demo                     # the whole capability, end to end
 pytest                                                  # 69 tests, offline
+python -m progress_tracker.cli prepare   # seed the workbench, stop at the review step
 python -m progress_tracker.cli serve                    # then open http://127.0.0.1:8000
 ```
 
